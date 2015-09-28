@@ -13,8 +13,8 @@ def carregar_configuracoes():
     global index_es, doc_type_es, tempo_checagem
     with open("config.yaml", "r") as configuracoes:
         data = yaml.load(configuracoes)
-    index = data.get('index.es')
-    doc_type = data.get('doc.type.es')
+    index_es = data.get('index.es')
+    doc_type_es = data.get('doc.type.es')
     tempo_checagem = data.get('tempo.checagem')
 
 
@@ -27,25 +27,11 @@ if __name__ == "__main__":
     es = Elasticsearch()
 
     while True:
-        res = es.get(index=index_es, doc_type=doc_type_es)
-        print(res['created'])
+        es.indices.refresh(index=index_es)
+        # res = es.get(index=index_es, doc_type=doc_type_es, id=2)
+        # print(res['_source'])
+        res = es.search(index=index_es, doc_type=doc_type_es, body={"query": {"match_all": {}}})
+        print("Got %d Hits:" % res['hits']['total'])
+        for hit in res['hits']['hits']:
+            print("%(timestamp)s %(author)s: %(text)s" % hit["_source"])
         sleep(tempo_checagem)
-# es = lasticsearch()
-#
-# doc = {
-#     'author': 'coisa',
-#     'text': 'coisa coisada',
-#     'timestamp': datetime.now(),
-# }
-# res = es.index(index="test-index", doc_type='tweet', id=2, body=doc)
-# print(res['created'])
-#
-# res = es.get(index="test-index", doc_type='tweet', id=2)
-# print(res['_source'])
-#
-# es.indices.refresh(index="test-index")
-#
-# res = es.search(index="test-index", body={"query": {"match_all": {}}})
-# print("Got %d Hits:" % res['hits']['total'])
-# for hit in res['hits']['hits']:
-#     print("%(timestamp)s %(author)s: %(text)s" % hit["_source"])
