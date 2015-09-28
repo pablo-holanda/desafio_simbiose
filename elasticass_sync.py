@@ -11,7 +11,8 @@ def carregar_configuracoes():
 
 if __name__ == "__main__":
     data = carregar_configuracoes()
-    print data
+    index = data.get('index')
+    print index
 # es = lasticsearch()
 #
 # doc = {
