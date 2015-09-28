@@ -1,18 +1,24 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import yaml
 
+index = ''
+doc_type = ''
+
 
 def carregar_configuracoes():
+    global index, doc_type
     with open("config.yaml", "r") as configuracoes:
         data = yaml.load(configuracoes)
-    return data
-
+    index = data.get('index')
+    doc_type = data.get('doc.type')
 
 if __name__ == "__main__":
+    print("Iniciado o sistema! \nCarregando as configurações contidas em config.yaml")
     data = carregar_configuracoes()
-    index = data.get('index')
-    print index
+    print ("\n************************************************\n\nindex - %s\ndoc_type - %s\n\n***********************"
+           "*************************" % (index, doc_type))
 # es = lasticsearch()
 #
 # doc = {
