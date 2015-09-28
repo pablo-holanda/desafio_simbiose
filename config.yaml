@@ -1,0 +1,12 @@
+################################### Configuração de checagem, padrão de 1s ###########################
+
+tempo.checagem: 1.0
+
+
+################################### Configurações do Elasticsearch ###################################
+
+# Setar de acordo com as configurações locais do ES.
+
+index: "index"
+doc.type: "doc_type"
+last.check.es: "timestamp"
