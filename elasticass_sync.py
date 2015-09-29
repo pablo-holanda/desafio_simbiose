@@ -6,16 +6,18 @@ from time import sleep
 
 index_es = ''
 doc_type_es = ''
+ultima_checagem_es = ''
 tempo_checagem = 0.0
 
 
 def carregar_configuracoes():
-    global index_es, doc_type_es, tempo_checagem
+    global index_es, doc_type_es, tempo_checagem, ultima_checagem_es
     with open("config.yaml", "r") as configuracoes:
         data = yaml.load(configuracoes)
     index_es = data.get('index.es')
     doc_type_es = data.get('doc.type.es')
     tempo_checagem = data.get('tempo.checagem')
+    ultima_checagem_es = data.get('last.check.es')
 
 
 if __name__ == "__main__":
@@ -30,7 +32,8 @@ if __name__ == "__main__":
         es.indices.refresh(index=index_es)
         # res = es.get(index=index_es, doc_type=doc_type_es, id=2)
         # print(res['_source'])
-        res = es.search(index=index_es, doc_type=doc_type_es, body={"query": {"match_all": {}}})
+        res = es.search(index=index_es, doc_type=doc_type_es, body={"query": {"range": {"timestamp": {"gt": ultima_checagem_es}}}})
+        ultima_checagem_es = datetime.now()
         print("Got %d Hits:" % res['hits']['total'])
         for hit in res['hits']['hits']:
             print("%(timestamp)s %(author)s: %(text)s" % hit["_source"])
