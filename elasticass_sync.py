@@ -3,6 +3,7 @@ from datetime import datetime
 from elasticsearch import Elasticsearch
 import yaml
 from time import sleep
+import signal, sys
 
 index_es = ''
 doc_type_es = ''
@@ -20,7 +21,13 @@ def carregar_configuracoes():
     ultima_checagem_es = data.get('last.check.es')
 
 
+def signal_handler(signal, frame):
+    print('Você apertou Ctrl+C!')
+    sys.exit(0)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
     print("Iniciado o sistema! \nCarregando as configurações contidas em config.yaml")
     data = carregar_configuracoes()
     print ("\n************************************************\n\nindex -> %s\ndoc_type -> %s\ntempo de checagem -> %s"
@@ -30,8 +37,6 @@ if __name__ == "__main__":
 
     while True:
         es.indices.refresh(index=index_es)
-        # res = es.get(index=index_es, doc_type=doc_type_es, id=2)
-        # print(res['_source'])
         res = es.search(index=index_es, doc_type=doc_type_es, body={"query": {"range": {"timestamp": {"gt": ultima_checagem_es}}}})
         ultima_checagem_es = datetime.now()
         print("Got %d Hits:" % res['hits']['total'])
