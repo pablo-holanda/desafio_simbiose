@@ -1,0 +1,12 @@
+################################### Configuração de checagem, padrão de 1s ###########################
+
+tempo.checagem: 2.0
+
+
+################################### Configurações do Elasticsearch ###################################
+
+# Setar de acordo com as configurações locais do ES.
+
+index.es: "biblioteca"
+doc.type.es: "livros"
+last.check.es: "2015-09-28T20:33:58.884739"
